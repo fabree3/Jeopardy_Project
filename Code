@@ -1,0 +1,25 @@
+import pandas as pd
+
+pd.set_option('display.max_colwidth', None)
+
+df = pd.read_csv("jeopardy.csv")
+df.dropna()
+df.rename(columns={"Show Number": "Show_Number","Air Date": "Date", "Category": "Category", "Value": "Amount", "Question": "Question", "Answer": "Answer"}, inplace = True)
+
+# FUNCTION TO FILTER QUESTIONS BASED ON KEYWORDS
+def qFilter(data, words): 
+    wlower = lambda x: all(word.lower() in x.lower() for word in words)
+   
+    return df.loc[df.Question.apply(wlower)]
+    
+# CONVERT ALL VALUES IN 'VALUE' COLUMN TO FLOAT  
+df['Amount'] = pd.to_numeric(df['Amount'], errors = 'coerce') 
+    
+check1 = qFilter(df, 'King')
+   
+# FUNCTION TO RETURN COUNT OF EACH QUESTION 
+
+def uniqueAnswer(data):
+   return data.Answer.value_counts()
+
+print(uniqueAnswer(check1)) 
